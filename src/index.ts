@@ -70,6 +70,11 @@ export default function devalue (value: any) {
             Object.getOwnPropertyNames(proto).sort().join('\0') !== objectProtoOwnPropertyNames
           ) {
             if (typeof thing.toJSON !== 'function') {
+              if (thing instanceof error) {
+                const newMessage = `Cannot stringify error ${thing.constructor.name} since it is non-POJOs. Original error:  ${thing.message}`
+                thing.message = newMessage
+                throw thing
+              }
               log(`Cannot stringify arbitrary non-POJOs ${thing.constructor.name}`)
             }
           } else if (Object.getOwnPropertySymbols(thing).length > 0) {
